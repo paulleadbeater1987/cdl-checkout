@@ -3,31 +3,35 @@ interface Pricing {
   specialPrice?: { quantity: number; price: number };
 }
 
-const prices: Record<string, Pricing> = {
+const prices: { [key: string]: Pricing } = {
   A: { unitPrice: 50, specialPrice: { quantity: 3, price: 130 } },
   B: { unitPrice: 30, specialPrice: { quantity: 2, price: 45 } },
   C: { unitPrice: 20 },
   D: { unitPrice: 15 },
 };
 
-export function calculateTotal(items: string[]): number {
-  const itemCounts = items.reduce((counts, item) => {
-    counts[item] = (counts[item] || 0) + 1;
-    return counts;
-  }, {} as Record<string, number>);
-
+export const calculateTotal = (items: string[]): number => {
   let total = 0;
+  const itemCount: { [key: string]: number } = {};
 
-  for (const [item, count] of Object.entries(itemCounts)) {
+  // Count the occurrence of each item
+  items.forEach(item => {
+    itemCount[item] = (itemCount[item] || 0) + 1;
+  });
+
+  // Calculate the total cost considering special pricing
+  for (const [item, count] of Object.entries(itemCount)) {
     const price = prices[item];
     if (price.specialPrice) {
-      const specialSets = Math.floor(count / price.specialPrice.quantity);
-      const remainingItems = count % price.specialPrice.quantity;
-      total += specialSets * price.specialPrice.price + remainingItems * price.unitPrice;
+      const { quantity, price: specialPrice } = price.specialPrice;
+      const specialSets = Math.floor(count / quantity);
+      const remainingItems = count % quantity;
+
+      total += specialSets * specialPrice + remainingItems * price.unitPrice;
     } else {
       total += count * price.unitPrice;
     }
   }
 
   return total / 100; // Convert to pounds
-}
+};
