@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
-import { calculateTotal } from './checkout';
+import React, { useState } from "react";
+import { calculateTotal } from "./checkout";
 
-const App = () => {
-  const [items, setItems] = useState<string[]>([]);
+const App: React.FC = () => {
+  const [cart, setCart] = useState<string[]>([]);
   const [total, setTotal] = useState<number>(0);
 
-  const handleAddItem = (item: string) => {
-    const updatedItems = [...items, item];
-    setItems(updatedItems);
-    setTotal(calculateTotal(updatedItems));
+  const addItem = (item: string) => {
+    const updatedCart = [...cart, item];
+    setCart(updatedCart);
+    setTotal(calculateTotal(updatedCart));
   };
 
   return (
     <div>
       <h1>Checkout System</h1>
       <div>
-        <button onClick={() => handleAddItem('A')}>Add Apple (A)</button>
-        <button onClick={() => handleAddItem('B')}>Add Banana (B)</button>
-        <button onClick={() => handleAddItem('C')}>Add Cherry (C)</button>
-        <button onClick={() => handleAddItem('D')}>Add Date (D)</button>
+        <button onClick={() => addItem("A")}>Add Item A</button>
+        <button onClick={() => addItem("B")}>Add Item B</button>
+        <button onClick={() => addItem("C")}>Add Item C</button>
+        <button onClick={() => addItem("D")}>Add Item D</button>
       </div>
-      <h2>Total: £{total.toFixed(2)}</h2>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+      <div>
+        <h2>Cart: {cart.join(", ")}</h2>
+        <h2>Total: £{total.toFixed(2)}</h2>
+      </div>
     </div>
   );
 };
